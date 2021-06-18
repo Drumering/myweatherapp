@@ -19,7 +19,7 @@
 
     <fragment
         android:id="@+id/navigation_settings"
-        android:name="school.cesar.myweather.ui.notifications.NotificationsFragment"
+        android:name="school.cesar.myweather.ui.settings.SettingsFragment"
         android:label="@string/title_settings"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/fragment_settings" />
 </navigation>
