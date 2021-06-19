@@ -3,8 +3,8 @@ package school.cesar.myweather.ui.home
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,8 +13,12 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import school.cesar.myweather.R
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import school.cesar.myweather.connector.RetrofitInitializer
 import school.cesar.myweather.databinding.FragmentHomeBinding
+import school.cesar.myweather.models.Weather
 
 class HomeFragment : Fragment() {
 
@@ -42,13 +46,29 @@ class HomeFragment : Fragment() {
         })
 
         binding.searchBarHome.setEndIconOnClickListener {
-
+            binding.searchBarHomeInputText.clearFocus()
             if (context != null) {
                 if (!isInternetAvailable(requireContext())){
                     Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT).show()
+                    return@setEndIconOnClickListener
                 }
             }
         }
+
+        val call = RetrofitInitializer().getService().getWeather("Curitiba")
+
+        call.enqueue(object: Callback<Weather> {
+            override fun onResponse(call: Call<Weather>, response: Response<Weather>) {
+                response.body().let {
+                    Log.d("WEATHER", it.toString())
+                }
+            }
+
+            override fun onFailure(call: Call<Weather>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+        })
 
         return root
     }
