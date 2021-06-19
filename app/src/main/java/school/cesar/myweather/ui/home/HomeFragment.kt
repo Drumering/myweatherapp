@@ -4,21 +4,15 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import school.cesar.myweather.connector.DatabaseConnector
 import school.cesar.myweather.connector.RequestManager
-import school.cesar.myweather.connector.RetrofitInitializer
 import school.cesar.myweather.databinding.FragmentHomeBinding
 import school.cesar.myweather.models.City
 import school.cesar.myweather.models.Weather
@@ -28,6 +22,9 @@ class HomeFragment : Fragment() {
 
     private lateinit var homeViewModel: HomeViewModel
     private var _binding: FragmentHomeBinding? = null
+    private val weatherDao by lazy {
+        context?.let { DatabaseConnector.getInstance(it).weatherDao }
+    }
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -52,7 +49,11 @@ class HomeFragment : Fragment() {
                 if (isInternetAvailable(requireContext())){
                     if (!binding.searchBarHomeInputText.text.isNullOrEmpty()) {
                         RequestManager.getWeather(binding.searchBarHomeInputText.text.toString(), this::showWeather)
+                    } else {
+                        Toast.makeText(context, "Insert a search condition", Toast.LENGTH_SHORT).show()
                     }
+                } else {
+                    Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -64,6 +65,18 @@ class HomeFragment : Fragment() {
 
     private fun showWeather(weather: Weather) {
         binding.recyclerViewAllWeathers.adapter = WeatherRecyclerViewAdapter(weather.list as MutableList<City>)
+        weatherDao?.insert(weather.list[0])
+
+        getFavorites()
+    }
+
+    private fun getFavorites() {
+        binding.recyclerViewAllWeathers.adapter = weatherDao?.getAll()?.let {
+            WeatherRecyclerViewAdapter(
+                it.toMutableList())
+        }
+
+        binding.recyclerViewAllWeathers.adapter?.notifyDataSetChanged()
     }
 
     private fun isInternetAvailable(context: Context): Boolean {
