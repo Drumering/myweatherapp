@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import school.cesar.myweather.connector.RequestManager
 import school.cesar.myweather.connector.RetrofitInitializer
 import school.cesar.myweather.databinding.FragmentHomeBinding
 import school.cesar.myweather.models.Weather
@@ -50,27 +51,17 @@ class HomeFragment : Fragment() {
             if (context != null) {
                 if (!isInternetAvailable(requireContext())){
                     Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT).show()
-                    return@setEndIconOnClickListener
                 }
             }
         }
 
-        val call = RetrofitInitializer().getService().getWeather("Curitiba")
-
-        call.enqueue(object: Callback<Weather> {
-            override fun onResponse(call: Call<Weather>, response: Response<Weather>) {
-                response.body().let {
-                    Log.d("WEATHER", it.toString())
-                }
-            }
-
-            override fun onFailure(call: Call<Weather>, t: Throwable) {
-                TODO("Not yet implemented")
-            }
-
-        })
+        RequestManager.getWeather("Curitiba", this::showWeather)
 
         return root
+    }
+
+    private fun showWeather(weather: Weather) {
+        Log.d("weather", weather.toString())
     }
 
     private fun isInternetAvailable(context: Context): Boolean {

@@ -8,7 +8,8 @@ import school.cesar.myweather.models.Weather
 
 interface WeatherInterface {
 
-    @GET("find?APPID=${Constants.APPID}")
+    @GET("find")
     fun getWeather(@Query("q") city: String,
-                   @Query("units") unit: String = "metric") : Call<Weather>
+                   @Query("units") unit: String = "metric",
+                   @Query("appid") appid:String = Constants.APPID) : Call<Weather>
 }

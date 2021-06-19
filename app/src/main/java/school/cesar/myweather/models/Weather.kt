@@ -1,3 +1,3 @@
 package school.cesar.myweather.models
 
-data class Weather(val name: String)
+data class Weather(val message: String)
