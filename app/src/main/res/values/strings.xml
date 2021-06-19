@@ -11,4 +11,6 @@
     <string name="celsius">Celsius</string>
     <string name="pref_file">prefFile</string>
     <string name="search">Search</string>
+    <string name="city_name">Curitiba</string>
+    <string name="city_temp">24</string>
 </resources>

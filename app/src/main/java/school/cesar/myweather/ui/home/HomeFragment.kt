@@ -13,13 +13,16 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import school.cesar.myweather.connector.RequestManager
 import school.cesar.myweather.connector.RetrofitInitializer
 import school.cesar.myweather.databinding.FragmentHomeBinding
+import school.cesar.myweather.models.City
 import school.cesar.myweather.models.Weather
+import school.cesar.myweather.utils.Utils
 
 class HomeFragment : Fragment() {
 
@@ -41,27 +44,26 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textHome
-        homeViewModel.text.observe(viewLifecycleOwner, Observer {
-            textView.text = it
-        })
-
         binding.searchBarHome.setEndIconOnClickListener {
-            binding.searchBarHomeInputText.clearFocus()
-            if (context != null) {
-                if (!isInternetAvailable(requireContext())){
-                    Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT).show()
+            context?.let { context ->
+                binding.searchBarHomeInputText.clearFocus()
+                Utils.hideKeyboard(context, binding.searchBarHomeInputText)
+
+                if (isInternetAvailable(requireContext())){
+                    if (!binding.searchBarHomeInputText.text.isNullOrEmpty()) {
+                        RequestManager.getWeather(binding.searchBarHomeInputText.text.toString(), this::showWeather)
+                    }
                 }
             }
         }
 
-        RequestManager.getWeather("Curitiba", this::showWeather)
+        binding.recyclerViewAllWeathers.layoutManager = LinearLayoutManager(context)
 
         return root
     }
 
     private fun showWeather(weather: Weather) {
-        Log.d("weather", weather.toString())
+        binding.recyclerViewAllWeathers.adapter = WeatherRecyclerViewAdapter(weather.list as MutableList<City>)
     }
 
     private fun isInternetAvailable(context: Context): Boolean {

@@ -22,7 +22,6 @@ class RequestManager {
                 override fun onFailure(call: Call<Weather>, t: Throwable) {
                     TODO("Not yet implemented")
                 }
-
             })
         }
     }
