@@ -4,4 +4,4 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "main")
-data class Main(@PrimaryKey val temp: Float)
+data class Main(@PrimaryKey var temp: Float)

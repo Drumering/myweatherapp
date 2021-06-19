@@ -10,8 +10,8 @@ import school.cesar.myweather.models.City
 interface WeatherDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(city: City)
+    suspend fun insert(city: City)
 
     @Query("SELECT * FROM cities")
-    fun getAll(): List<City>
+    suspend fun getAll(): List<City>
 }
