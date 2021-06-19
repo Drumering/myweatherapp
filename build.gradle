@@ -6,7 +6,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:4.2.0"
+        classpath "com.android.tools.build:gradle:4.2.1"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -20,6 +20,14 @@ allprojects {
         mavenCentral()
         jcenter() // Warning: this repository is going to shut down soon
     }
+}
+
+ext {
+    room_version = "2.3.0"
+    lifecycle_version = "2.3.1"
+    arch_version = "2.1.0"
+    activityktx_version = "1.2.3"
+    glide_version = "4.11.0"
 }
 
 task clean(type: Delete) {

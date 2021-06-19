@@ -2,12 +2,14 @@ package school.cesar.myweather.ui.home
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import school.cesar.myweather.R
 import school.cesar.myweather.databinding.LayoutWeatherBinding
 import school.cesar.myweather.models.City
 
-class WeatherRecyclerViewAdapter (private val cities: MutableList<City>) : RecyclerView.Adapter<WeatherRecyclerViewAdapter.ViewHolder>() {
+class WeatherRecyclerViewAdapter(private val cities: MutableList<City>) : RecyclerView.Adapter<WeatherRecyclerViewAdapter.ViewHolder>() {
     class ViewHolder(view: LayoutWeatherBinding) : RecyclerView.ViewHolder(view.root) {
         val cityName = view.tvCityName
         val cityTemp = view.tvCityTemp
