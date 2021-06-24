@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,8 +35,6 @@ class HomeFragment : Fragment() {
         WeatherRecyclerViewAdapter()
     }
 
-    private lateinit var adapter: WeatherRecyclerViewAdapter
-
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
@@ -58,6 +57,7 @@ class HomeFragment : Fragment() {
 
                 if (isInternetAvailable(requireContext())){
                     if (!binding.searchBarHomeInputText.text.isNullOrEmpty()) {
+                        binding.progressCircular.visibility = View.VISIBLE
                         RequestManager.getWeather(binding.searchBarHomeInputText.text.toString(), this::showWeather)
                     } else {
                         Toast.makeText(context, "Insert a search condition", Toast.LENGTH_SHORT).show()
@@ -70,13 +70,15 @@ class HomeFragment : Fragment() {
 
         binding.recyclerViewAllWeathers.layoutManager = LinearLayoutManager(context)
 
+        getFavorites()
+
         return root
     }
 
     private fun showWeather(weather: CurrentWeather) {
-        adapter = weatherRecyclerViewAdapter
-        adapter.cities = weather.list.toMutableList()
-        binding.recyclerViewAllWeathers.adapter = adapter
+        binding.progressCircular.visibility = View.GONE
+        weatherRecyclerViewAdapter.cities = weather.list.toMutableList()
+        binding.recyclerViewAllWeathers.adapter = weatherRecyclerViewAdapter
 
         lifecycleScope.launch {
             withContext(Dispatchers.IO) {
@@ -89,11 +91,9 @@ class HomeFragment : Fragment() {
         lifecycleScope.launch {
             withContext(Dispatchers.IO) {
                 weatherDao?.getAll()?.let {
-                    adapter = weatherRecyclerViewAdapter
-//                    adapter.cities = it.toMutableList()
-                    withContext(Dispatchers.Main) {
-                        binding.recyclerViewAllWeathers.adapter = adapter
-                    }
+//                    withContext(Dispatchers.Main) {
+//                        binding.recyclerViewAllWeathers.adapter = adapter
+//                    }
                 }
             }
         }
