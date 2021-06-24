@@ -1,3 +1,3 @@
 package school.cesar.myweather.models
 
-data class Main(var temp: Float)
+data class Icon(val icon: String)

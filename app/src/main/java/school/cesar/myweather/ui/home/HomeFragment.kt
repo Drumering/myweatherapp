@@ -4,7 +4,6 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,9 +19,9 @@ import school.cesar.myweather.connector.DatabaseConnector
 import school.cesar.myweather.connector.RequestManager
 import school.cesar.myweather.databinding.FragmentHomeBinding
 import school.cesar.myweather.models.City
-import school.cesar.myweather.models.Weather
+import school.cesar.myweather.models.CurrentWeather
+import school.cesar.myweather.models.FavoriteCity
 import school.cesar.myweather.utils.Utils
-import kotlin.math.log
 
 class HomeFragment : Fragment() {
 
@@ -30,6 +29,9 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val weatherDao by lazy {
         context?.let { DatabaseConnector.getInstance(it).weatherDao }
+    }
+    private val weatherRecyclerViewAdapter by lazy {
+        WeatherRecyclerViewAdapter()
     }
 
     private lateinit var adapter: WeatherRecyclerViewAdapter
@@ -68,18 +70,17 @@ class HomeFragment : Fragment() {
 
         binding.recyclerViewAllWeathers.layoutManager = LinearLayoutManager(context)
 
-        getFavorites()
-
         return root
     }
 
-    private fun showWeather(weather: Weather) {
-        adapter = WeatherRecyclerViewAdapter(weather.list as MutableList<City>)
+    private fun showWeather(weather: CurrentWeather) {
+        adapter = weatherRecyclerViewAdapter
+        adapter.cities = weather.list.toMutableList()
         binding.recyclerViewAllWeathers.adapter = adapter
 
         lifecycleScope.launch {
             withContext(Dispatchers.IO) {
-                weatherDao?.insert(weather.list[0])
+                weatherDao?.insert(FavoriteCity(weather.list[0].id))
             }
         }
     }
@@ -88,7 +89,8 @@ class HomeFragment : Fragment() {
         lifecycleScope.launch {
             withContext(Dispatchers.IO) {
                 weatherDao?.getAll()?.let {
-                    adapter = WeatherRecyclerViewAdapter(it.toMutableList())
+                    adapter = weatherRecyclerViewAdapter
+//                    adapter.cities = it.toMutableList()
                     withContext(Dispatchers.Main) {
                         binding.recyclerViewAllWeathers.adapter = adapter
                     }

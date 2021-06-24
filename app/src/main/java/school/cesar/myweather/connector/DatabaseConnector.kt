@@ -6,9 +6,11 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import school.cesar.myweather.dao.WeatherDao
 import school.cesar.myweather.models.City
+import school.cesar.myweather.models.FavoriteCity
 import school.cesar.myweather.models.Main
+import school.cesar.myweather.models.Icon
 
-@Database(entities = [City::class, Main::class], version = 1, exportSchema = false)
+@Database(entities = [FavoriteCity::class], version = 1, exportSchema = false)
 abstract class DatabaseConnector : RoomDatabase(){
     abstract val weatherDao: WeatherDao
 
