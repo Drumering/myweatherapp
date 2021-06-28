@@ -18,6 +18,7 @@ import kotlinx.coroutines.withContext
 import school.cesar.myweather.connector.DatabaseConnector
 import school.cesar.myweather.connector.RequestManager
 import school.cesar.myweather.databinding.FragmentFavoriteBinding
+import school.cesar.myweather.models.City
 import school.cesar.myweather.models.CurrentWeather
 import school.cesar.myweather.models.FavoriteCity
 import school.cesar.myweather.ui.home.WeatherRecyclerViewAdapter
@@ -36,7 +37,6 @@ class FavoriteFragment : Fragment() {
         context?.let { DatabaseConnector.getInstance(it).weatherDao }
     }
 
-//    private lateinit var favoriteCitiesIds: List<FavoriteCity>
     private var favoriteCitiesIds: MutableList<FavoriteCity> by Delegates.observable(mutableListOf(), onChange = { property, oldValue, newValue ->
         newValue.forEach {
             RequestManager.getWeatherById(it.id, this::showWeather)
@@ -59,6 +59,7 @@ class FavoriteFragment : Fragment() {
         val root: View = binding.root
 
         binding.recyclerViewFavoriteWeathers.layoutManager = LinearLayoutManager(context)
+        binding.recyclerViewFavoriteWeathers.adapter = weatherRecyclerViewAdapter
 
         getFavorites()
 
@@ -69,10 +70,10 @@ class FavoriteFragment : Fragment() {
         //TO DO
     }
 
-    private fun showWeather(weather: CurrentWeather) {
+    private fun showWeather(city: City) {
         binding.progressCircular.visibility = View.GONE
-        weatherRecyclerViewAdapter.cities = weather.list.toMutableList()
-        binding.recyclerViewFavoriteWeathers.adapter = weatherRecyclerViewAdapter
+        weatherRecyclerViewAdapter.cities.add(city)
+        weatherRecyclerViewAdapter.notifyDataSetChanged()
     }
 
     private fun getFavorites() {

@@ -67,14 +67,15 @@ class HomeFragment : Fragment() {
         }
 
         binding.recyclerViewAllWeathers.layoutManager = LinearLayoutManager(context)
+        binding.recyclerViewAllWeathers.adapter = weatherRecyclerViewAdapter
 
         return root
     }
 
     private fun showWeather(weather: CurrentWeather) {
         binding.progressCircular.visibility = View.GONE
-        weatherRecyclerViewAdapter.cities = weather.list.toMutableList()
-        binding.recyclerViewAllWeathers.adapter = weatherRecyclerViewAdapter
+        weatherRecyclerViewAdapter.cities.addAll(weather.list)
+        weatherRecyclerViewAdapter.notifyDataSetChanged()
     }
 
     private fun setFavorite(id: Long) {

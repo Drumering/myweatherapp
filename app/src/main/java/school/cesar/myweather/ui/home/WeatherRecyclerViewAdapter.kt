@@ -14,11 +14,8 @@ import school.cesar.myweather.models.FavoriteCity
 
 class WeatherRecyclerViewAdapter(private val onItemClickListener: (Long) -> Unit) : RecyclerView.Adapter<WeatherRecyclerViewAdapter.ViewHolder>() {
 
-    lateinit var cities: MutableList<City>
+    var cities = mutableListOf<City>()
     private lateinit var context: Context
-    private val weatherDao by lazy {
-        context.let { DatabaseConnector.getInstance(it).weatherDao }
-    }
 
     class ViewHolder(view: LayoutWeatherBinding) : RecyclerView.ViewHolder(view.root) {
         val cityName = view.tvCityName
