@@ -16,6 +16,6 @@ interface WeatherInterface {
 
     @GET("weather")
     fun getWeatherById(@Query("id") id: Long,
-                       @Query("Units") unit: String = "metric",
+                       @Query("units") unit: String = "metric",
                        @Query("appid") appid: String = Constants.APPID) : Call<City>
 }

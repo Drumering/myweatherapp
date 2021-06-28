@@ -19,7 +19,6 @@ import school.cesar.myweather.connector.DatabaseConnector
 import school.cesar.myweather.connector.RequestManager
 import school.cesar.myweather.databinding.FragmentFavoriteBinding
 import school.cesar.myweather.models.City
-import school.cesar.myweather.models.CurrentWeather
 import school.cesar.myweather.models.FavoriteCity
 import school.cesar.myweather.ui.home.WeatherRecyclerViewAdapter
 import kotlin.properties.Delegates
@@ -37,7 +36,7 @@ class FavoriteFragment : Fragment() {
         context?.let { DatabaseConnector.getInstance(it).weatherDao }
     }
 
-    private var favoriteCitiesIds: MutableList<FavoriteCity> by Delegates.observable(mutableListOf(), onChange = { property, oldValue, newValue ->
+    private var favoriteCitiesIds: MutableList<FavoriteCity> by Delegates.observable(mutableListOf(), onChange = { _, _, newValue ->
         newValue.forEach {
             RequestManager.getWeatherById(it.id, this::showWeather)
         }
@@ -66,8 +65,16 @@ class FavoriteFragment : Fragment() {
         return root
     }
 
-    private fun removeFavorite(id: Long) {
-        //TO DO
+    private fun removeFavorite(position: Int) {
+        lifecycleScope.launch {
+            withContext(Dispatchers.IO) {
+                weatherDao?.delete(favoriteCitiesIds[position])
+                weatherRecyclerViewAdapter.cities.removeAt(position)
+                withContext(Dispatchers.Main) {
+                    weatherRecyclerViewAdapter.notifyItemRemoved(position)
+                }
+            }
+        }
     }
 
     private fun showWeather(city: City) {
@@ -81,8 +88,14 @@ class FavoriteFragment : Fragment() {
         if (isInternetAvailable(requireContext())){
             lifecycleScope.launch {
                 withContext(Dispatchers.IO) {
-                    weatherDao?.getAll()?.let {
-                        favoriteCitiesIds = it.toMutableList()
+                    weatherDao?.getAll()?.apply {
+                        if (!isEmpty()) {
+                            favoriteCitiesIds = toMutableList()
+                        } else {
+                            withContext(Dispatchers.Main) {
+                                binding.progressCircular.visibility = View.GONE
+                            }
+                        }
                     }
                 }
             }

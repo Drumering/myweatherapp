@@ -12,7 +12,7 @@ import school.cesar.myweather.databinding.LayoutWeatherBinding
 import school.cesar.myweather.models.City
 import school.cesar.myweather.models.FavoriteCity
 
-class WeatherRecyclerViewAdapter(private val onItemClickListener: (Long) -> Unit) : RecyclerView.Adapter<WeatherRecyclerViewAdapter.ViewHolder>() {
+class WeatherRecyclerViewAdapter(private val onItemClickListener: (Int) -> Unit) : RecyclerView.Adapter<WeatherRecyclerViewAdapter.ViewHolder>() {
 
     var cities = mutableListOf<City>()
     private lateinit var context: Context
@@ -31,7 +31,7 @@ class WeatherRecyclerViewAdapter(private val onItemClickListener: (Long) -> Unit
         val viewHolder = ViewHolder(binding)
 
         viewHolder.itemView.setOnClickListener {
-            onItemClickListener(viewHolder.adapterPosition.toLong())
+            onItemClickListener(viewHolder.adapterPosition)
         }
 
         return viewHolder

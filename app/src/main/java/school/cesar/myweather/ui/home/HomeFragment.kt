@@ -74,14 +74,14 @@ class HomeFragment : Fragment() {
 
     private fun showWeather(weather: CurrentWeather) {
         binding.progressCircular.visibility = View.GONE
-        weatherRecyclerViewAdapter.cities.addAll(weather.list)
+        weatherRecyclerViewAdapter.cities = weather.list.toMutableList()
         weatherRecyclerViewAdapter.notifyDataSetChanged()
     }
 
-    private fun setFavorite(id: Long) {
+    private fun setFavorite(position: Int) {
         lifecycleScope.launch {
             withContext(Dispatchers.IO) {
-                weatherDao?.insert(FavoriteCity(id))
+                weatherDao?.insert(FavoriteCity(weatherRecyclerViewAdapter.cities[position].id))
             }
         }
     }
