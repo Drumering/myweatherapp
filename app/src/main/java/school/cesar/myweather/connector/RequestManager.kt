@@ -8,8 +8,8 @@ import school.cesar.myweather.models.CurrentWeather
 class RequestManager {
     companion object {
 
-        fun getWeather(city: String, callback: (CurrentWeather) -> Unit) {
-            val call = RetrofitInitializer().getService().getWeather(city)
+        fun getWeatherByName(city: String, callback: (CurrentWeather) -> Unit) {
+            val call = RetrofitInitializer().getService().getWeatherByName(city)
 
             call.enqueue(object: Callback<CurrentWeather> {
                 override fun onResponse(call: Call<CurrentWeather>, response: Response<CurrentWeather>) {
@@ -21,6 +21,26 @@ class RequestManager {
                 override fun onFailure(call: Call<CurrentWeather>, t: Throwable) {
                     TODO("Not yet implemented")
                 }
+            })
+        }
+
+        fun getWeatherById(id: Long, callback: (CurrentWeather) -> Unit) {
+            val call = RetrofitInitializer().getService().getWeatherById(id)
+
+            call.enqueue(object: Callback<CurrentWeather> {
+                override fun onResponse(
+                    call: Call<CurrentWeather>,
+                    response: Response<CurrentWeather>
+                ) {
+                    response.body()?.let {
+                        callback(it)
+                    }
+                }
+
+                override fun onFailure(call: Call<CurrentWeather>, t: Throwable) {
+                    TODO("Not yet implemented")
+                }
+
             })
         }
     }

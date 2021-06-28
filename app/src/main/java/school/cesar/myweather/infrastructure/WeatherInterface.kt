@@ -9,7 +9,12 @@ import school.cesar.myweather.models.CurrentWeather
 interface WeatherInterface {
 
     @GET("find")
-    fun getWeather(@Query("q") city: String,
-                   @Query("units") unit: String = "metric",
-                   @Query("appid") appid:String = Constants.APPID) : Call<CurrentWeather>
+    fun getWeatherByName(@Query("q") city: String,
+                         @Query("units") unit: String = "metric",
+                         @Query("appid") appid:String = Constants.APPID) : Call<CurrentWeather>
+
+    @GET("weather")
+    fun getWeatherById(@Query("id") id: Long,
+                       @Query("Units") unit: String = "metric",
+                       @Query("appid") appid: String = Constants.APPID) : Call<CurrentWeather>
 }

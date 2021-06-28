@@ -56,7 +56,7 @@ class HomeFragment : Fragment() {
                 if (isInternetAvailable(requireContext())){
                     if (!binding.searchBarHomeInputText.text.isNullOrEmpty()) {
                         binding.progressCircular.visibility = View.VISIBLE
-                        RequestManager.getWeather(binding.searchBarHomeInputText.text.toString(), this::showWeather)
+                        RequestManager.getWeatherByName(binding.searchBarHomeInputText.text.toString(), this::showWeather)
                     } else {
                         Toast.makeText(context, "Insert a search condition", Toast.LENGTH_SHORT).show()
                     }
