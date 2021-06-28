@@ -1,19 +1,24 @@
 package school.cesar.myweather.ui.home
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import school.cesar.myweather.Constants
 import school.cesar.myweather.R
+import school.cesar.myweather.connector.DatabaseConnector
 import school.cesar.myweather.databinding.LayoutWeatherBinding
 import school.cesar.myweather.models.City
+import school.cesar.myweather.models.FavoriteCity
 
-class WeatherRecyclerViewAdapter() : RecyclerView.Adapter<WeatherRecyclerViewAdapter.ViewHolder>() {
+class WeatherRecyclerViewAdapter(private val onItemClickListener: (Long) -> Unit) : RecyclerView.Adapter<WeatherRecyclerViewAdapter.ViewHolder>() {
 
-    public lateinit var cities: MutableList<City>
+    lateinit var cities: MutableList<City>
+    private lateinit var context: Context
+    private val weatherDao by lazy {
+        context.let { DatabaseConnector.getInstance(it).weatherDao }
+    }
 
     class ViewHolder(view: LayoutWeatherBinding) : RecyclerView.ViewHolder(view.root) {
         val cityName = view.tvCityName
@@ -22,9 +27,15 @@ class WeatherRecyclerViewAdapter() : RecyclerView.Adapter<WeatherRecyclerViewAda
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        this.context = parent.context
+
         val view = LayoutInflater.from(parent.context).inflate(R.layout.layout_weather, parent, false)
         val binding = LayoutWeatherBinding.bind(view)
         val viewHolder = ViewHolder(binding)
+
+        viewHolder.itemView.setOnClickListener {
+            onItemClickListener(viewHolder.adapterPosition.toLong())
+        }
 
         return viewHolder
     }

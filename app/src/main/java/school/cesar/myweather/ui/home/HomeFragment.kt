@@ -4,7 +4,6 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +18,6 @@ import kotlinx.coroutines.withContext
 import school.cesar.myweather.connector.DatabaseConnector
 import school.cesar.myweather.connector.RequestManager
 import school.cesar.myweather.databinding.FragmentHomeBinding
-import school.cesar.myweather.models.City
 import school.cesar.myweather.models.CurrentWeather
 import school.cesar.myweather.models.FavoriteCity
 import school.cesar.myweather.utils.Utils
@@ -32,7 +30,7 @@ class HomeFragment : Fragment() {
         context?.let { DatabaseConnector.getInstance(it).weatherDao }
     }
     private val weatherRecyclerViewAdapter by lazy {
-        WeatherRecyclerViewAdapter()
+        WeatherRecyclerViewAdapter(this::setFavorite)
     }
 
     // This property is only valid between onCreateView and
@@ -70,8 +68,6 @@ class HomeFragment : Fragment() {
 
         binding.recyclerViewAllWeathers.layoutManager = LinearLayoutManager(context)
 
-        getFavorites()
-
         return root
     }
 
@@ -79,22 +75,12 @@ class HomeFragment : Fragment() {
         binding.progressCircular.visibility = View.GONE
         weatherRecyclerViewAdapter.cities = weather.list.toMutableList()
         binding.recyclerViewAllWeathers.adapter = weatherRecyclerViewAdapter
-
-        lifecycleScope.launch {
-            withContext(Dispatchers.IO) {
-                weatherDao?.insert(FavoriteCity(weather.list[0].id))
-            }
-        }
     }
 
-    private fun getFavorites() {
+    private fun setFavorite(id: Long) {
         lifecycleScope.launch {
             withContext(Dispatchers.IO) {
-                weatherDao?.getAll()?.let {
-//                    withContext(Dispatchers.Main) {
-//                        binding.recyclerViewAllWeathers.adapter = adapter
-//                    }
-                }
+                weatherDao?.insert(FavoriteCity(id))
             }
         }
     }

@@ -13,4 +13,5 @@
     <string name="search">Search</string>
     <string name="city_name">Curitiba</string>
     <string name="city_temp">24</string>
+    <string name="title_favorite">Favorite</string>
 </resources>

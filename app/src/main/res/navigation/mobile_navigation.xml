@@ -12,10 +12,10 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="school.cesar.myweather.ui.dashboard.DashboardFragment"
+        android:id="@+id/navigation_favorite"
+        android:name="school.cesar.myweather.ui.favorites.FavoriteFragment"
         android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_favorite" />
 
     <fragment
         android:id="@+id/navigation_settings"
