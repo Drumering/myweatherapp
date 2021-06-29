@@ -14,4 +14,6 @@
     <string name="city_name">Curitiba</string>
     <string name="city_temp">24</string>
     <string name="title_favorite">Favorite</string>
+    <string name="title_insert_name_city">Insert the name city to search</string>
+    <string name="title_insert_favorite">Insert a city as favorite to see here</string>
 </resources>

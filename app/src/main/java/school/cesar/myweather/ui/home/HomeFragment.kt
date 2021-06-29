@@ -59,6 +59,7 @@ class HomeFragment : Fragment() {
         binding.searchBarHome.setEndIconOnClickListener {
             context?.let { context ->
                 binding.searchBarHomeInputText.clearFocus()
+                binding.tvAlertInsert.visibility = View.GONE
                 Utils.hideKeyboard(context, binding.searchBarHomeInputText)
 
                 if (isInternetAvailable(requireContext())){
@@ -70,6 +71,7 @@ class HomeFragment : Fragment() {
                             RequestManager.getWeatherByName(binding.searchBarHomeInputText.text.toString(),"imperial" ,this::showWeather)
                         }
                     } else {
+                        binding.tvAlertInsert.visibility = View.VISIBLE
                         Toast.makeText(context, "Insert a search condition", Toast.LENGTH_SHORT).show()
                     }
                 } else {
@@ -90,7 +92,11 @@ class HomeFragment : Fragment() {
 
     private fun showWeather(weather: CurrentWeather) {
         binding.progressCircular.visibility = View.GONE
-        weatherRecyclerViewAdapter.cities = weather.list.toMutableList()
+        if (weather.list.isEmpty()) {
+            binding.tvAlertInsert.visibility = View.VISIBLE
+        } else {
+            weatherRecyclerViewAdapter.cities = weather.list.toMutableList()
+        }
         weatherRecyclerViewAdapter.notifyDataSetChanged()
     }
 

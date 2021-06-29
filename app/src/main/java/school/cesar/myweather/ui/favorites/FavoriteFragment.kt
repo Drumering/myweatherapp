@@ -88,6 +88,9 @@ class FavoriteFragment : Fragment() {
                 weatherRecyclerViewAdapter.cities.removeAt(position)
                 withContext(Dispatchers.Main) {
                     weatherRecyclerViewAdapter.notifyItemRemoved(position)
+                    if (weatherRecyclerViewAdapter.cities.isEmpty()) {
+                        binding.tvAlertInsert.visibility = View.VISIBLE
+                    }
                 }
             }
         }
@@ -95,6 +98,7 @@ class FavoriteFragment : Fragment() {
 
     private fun showWeather(city: City) {
         binding.progressCircular.visibility = View.GONE
+        binding.tvAlertInsert.visibility = View.GONE
         weatherRecyclerViewAdapter.cities.add(city)
         weatherRecyclerViewAdapter.notifyDataSetChanged()
     }
@@ -110,6 +114,7 @@ class FavoriteFragment : Fragment() {
                         } else {
                             withContext(Dispatchers.Main) {
                                 binding.progressCircular.visibility = View.GONE
+                                binding.tvAlertInsert.visibility = View.VISIBLE
                             }
                         }
                     }
