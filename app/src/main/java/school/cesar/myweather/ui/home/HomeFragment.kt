@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import school.cesar.myweather.R
 import school.cesar.myweather.connector.DatabaseConnector
 import school.cesar.myweather.connector.RequestManager
 import school.cesar.myweather.databinding.FragmentHomeBinding
@@ -33,9 +34,16 @@ class HomeFragment : Fragment() {
         WeatherRecyclerViewAdapter(this::setFavorite)
     }
 
+    private val sharedPreferences by lazy {
+        context?.getSharedPreferences(getString(R.string.pref_file), Context.MODE_PRIVATE)
+    }
+
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+
+    private var unit = false
+    private var lang = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,7 +64,11 @@ class HomeFragment : Fragment() {
                 if (isInternetAvailable(requireContext())){
                     if (!binding.searchBarHomeInputText.text.isNullOrEmpty()) {
                         binding.progressCircular.visibility = View.VISIBLE
-                        RequestManager.getWeatherByName(binding.searchBarHomeInputText.text.toString(), this::showWeather)
+                        if (unit) {
+                            RequestManager.getWeatherByName(binding.searchBarHomeInputText.text.toString(),"metric" ,this::showWeather)
+                        } else {
+                            RequestManager.getWeatherByName(binding.searchBarHomeInputText.text.toString(),"imperial" ,this::showWeather)
+                        }
                     } else {
                         Toast.makeText(context, "Insert a search condition", Toast.LENGTH_SHORT).show()
                     }
@@ -68,6 +80,10 @@ class HomeFragment : Fragment() {
 
         binding.recyclerViewAllWeathers.layoutManager = LinearLayoutManager(context)
         binding.recyclerViewAllWeathers.adapter = weatherRecyclerViewAdapter
+
+        sharedPreferences?.let {
+            unit = it.getBoolean("temp_C", false)
+        }
 
         return root
     }

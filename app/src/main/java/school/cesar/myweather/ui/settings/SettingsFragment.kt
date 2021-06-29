@@ -30,11 +30,6 @@ class SettingsFragment : Fragment() {
         _binding = FragmentSettingsBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-//        val textView: TextView = binding.textNotifications
-//        notificationsViewModel.text.observe(viewLifecycleOwner, Observer {
-//            textView.text = it
-//        })
-
         val sharedPreferences = context?.getSharedPreferences(getString(R.string.pref_file), Context.MODE_PRIVATE)
 
         sharedPreferences?.let {

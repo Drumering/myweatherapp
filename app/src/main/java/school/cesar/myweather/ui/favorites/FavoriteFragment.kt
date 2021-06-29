@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import school.cesar.myweather.R
 import school.cesar.myweather.connector.DatabaseConnector
 import school.cesar.myweather.connector.RequestManager
 import school.cesar.myweather.databinding.FragmentFavoriteBinding
@@ -36,11 +37,22 @@ class FavoriteFragment : Fragment() {
         context?.let { DatabaseConnector.getInstance(it).weatherDao }
     }
 
+    private val sharedPreferences by lazy {
+        context?.getSharedPreferences(getString(R.string.pref_file), Context.MODE_PRIVATE)
+    }
+
     private var favoriteCitiesIds: MutableList<FavoriteCity> by Delegates.observable(mutableListOf(), onChange = { _, _, newValue ->
         newValue.forEach {
-            RequestManager.getWeatherById(it.id, this::showWeather)
+            if (unit) {
+                RequestManager.getWeatherById(it.id, "metric", this::showWeather)
+            } else {
+                RequestManager.getWeatherById(it.id, "imperial", this::showWeather)
+            }
         }
     })
+
+    private var unit = false
+    private var lang = false
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -59,6 +71,10 @@ class FavoriteFragment : Fragment() {
 
         binding.recyclerViewFavoriteWeathers.layoutManager = LinearLayoutManager(context)
         binding.recyclerViewFavoriteWeathers.adapter = weatherRecyclerViewAdapter
+
+        sharedPreferences?.let {
+            unit = it.getBoolean("temp_C", false)
+        }
 
         getFavorites()
 
